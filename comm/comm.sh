@@ -98,6 +98,17 @@ function set_hostname(){
     service salt-minion start
 }
 
+function setHostName(){
+	local name=${1}
+	hostname ${name}
+	if [ -x /usr/bin/hostnamectl ];then
+		/usr/bin/hostnamectl --static set-hostname ${name}
+		return 1
+	else
+		return 0 
+	fi
+}
+
 
 function set_master(){
     # hosts修改

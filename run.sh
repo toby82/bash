@@ -48,7 +48,7 @@ If setting OS without this tool, you must run some commands manually.
 EOF
     echo "Please choose what you want to set: "
     # 一级菜单
-    result=$( UI_selection "Hostname:Network:Set Master:Quit" ); 
+    result=$( UI_selection "Hostname:Network:Quit" ); 
     case "$result" in
     "Hostname" )
         # 二级级菜单
@@ -56,13 +56,13 @@ EOF
         echo -e "\n######## MENU $result ########"
         _in_hostname=$(UI_getInput "Please enter hostname: " "required")
         UI_save
-        [ $? -eq 1 ] && set_hostname $_in_hostname
+        [ $? -eq 1 ] && setHostName $_in_hostname
         ;;
     "Network" )
         # 二级级菜单
         clear
         echo -e "\n######## MENU $result ########"
-        result=$( UI_selection "Single:Bond:Return Main Menu" );
+        result=$( UI_selection "Single:Return Main Menu" );
         _in_nic=""; _in_muti_nic=""; _in_mode=""; _in_model=""; _in_ip=""; _in_mask=""; _in_gw=""; _in_dns=""
         case "$result" in
         "Single" )
@@ -97,21 +97,24 @@ EOF
             setNetwork -dev $_in_nic $_in_muti_nic -model $_in_model -mod $_in_mode -ip $_in_ip -mask $_in_mask -gw $_in_gw -dns $_in_dns
         fi
         ;;
-    "Set Master" )
-        # 二级级菜单
-        clear
-        echo -e "\n######## MENU Set Master ########"
-        echo "The master server will be use for deploying、managing CC NN in IaaS."
-        _in_master_ip=$(UI_getInput "Please input the IP of the master: " "required" "check_ip")
-        if [ -e "$DEPLOY_ROLE_FLAG" ];then 
-            # 判断为Master，需要设置时间
-            old_datestr=$(date "+%Y-%m-%d %H:%M")
-            UI_getInput "Please input the datetime for the master:(default ${old_datestr}) " "$old_datestr" "check_set_datetime"
-        fi
-        UI_save
-        [ $? -eq 1 ] && set_master $_in_master_ip
-        ;;
+#
+#    "Set Master" )
+#        # 二级级菜单
+#        clear
+#        echo -e "\n######## MENU Set Master ########"
+#        echo "The master server will be use for deploying、managing CC NN in IaaS."
+#        _in_master_ip=$(UI_getInput "Please input the IP of the master: " "required" "check_ip")
+#        if [ -e "$DEPLOY_ROLE_FLAG" ];then 
+#            # 判断为Master，需要设置时间
+#            old_datestr=$(date "+%Y-%m-%d %H:%M")
+#            UI_getInput "Please input the datetime for the master:(default ${old_datestr}) " "$old_datestr" "check_set_datetime"
+#        fi
+#        UI_save
+#        [ $? -eq 1 ] && set_master $_in_master_ip
+#        ;;
+#
     "Quit" )
+		sed -i '/run.sh$/d' /etc/profile
         exit 0
         ;;
     esac
